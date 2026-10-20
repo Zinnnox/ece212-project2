@@ -9,4 +9,9 @@ module negate(
     */
     //Do not modify above this line
 
+    always @(*) begin
+        if (en) out = ~in + 1;
+        else out = in;
+    end
+
 endmodule
