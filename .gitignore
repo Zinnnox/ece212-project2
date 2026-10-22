@@ -1,3 +1,4 @@
 solution/
 autograder/
 kicad/.xdp-*
+./pico_enigma/_build/*
