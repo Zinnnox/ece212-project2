@@ -42,9 +42,44 @@ module main(
     reg [7:0] led;
     shift_reg sreg(led, seven_seg, clk, strobe, data, shift_clk);
 
-    // for testing display 
-    // sevseg_disp disp(sw[3:0], btn[0], seven_seg);
+    wire db_btn0, db_btn1;
+    debounce db0(clk, btn[0], db_btn0);
+    debounce db1(clk, btn[1], db_btn1);
 
+    wire [3:0] enigma_out, enigma_key;
+    enigma enigma1(
+        .clk(db_btn0  | db_btn1),
+        .reset(btn[1]),
+        .seed(sw[7:0]),
+        .in(sw[3:0]),
+        .out(enigma_out),
+        .key(enigma_key)
+    );
+
+    wire [3:0] sevensegd_in, led30_in;
+    swap swap1(
+        .en(btn[2]),
+        .a(enigma_out),
+        .b(sw[3:0]),    
+        .x(sevensegd_in),
+        .y(led30_in)
+    );
     
+    sevseg_disp disp(
+        .in(sevensegd_in),
+        .dp(db_btn0 | db_btn1),
+        .segs(seven_seg)
+    );
+    
+    always @(*) begin
+        // if btn[3] is pressed, leds will show sw[7:0]
+        if (btn[3]) led[7:0] = sw[7:0];
+        else begin 
+            // otherwise, [7:4] will show the key 
+            led[7:4] = enigma_key;
+            // and [3:0] will show the input or output depending on swap
+            led[3:0] = led30_in;
+        end
+    end
 
 endmodule
