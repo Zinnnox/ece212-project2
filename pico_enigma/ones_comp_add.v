@@ -14,7 +14,7 @@ module ones_comp_add(
 
     always @(*) begin
         sum = a + b; 
-        out = sum[3:0] + sum[4] // adds 1 if carry out is 1, 0 otherwise
+        out = sum[3:0] + sum[4]; // adds 1 if carry out is 1, 0 otherwise
     end 
 
 endmodule

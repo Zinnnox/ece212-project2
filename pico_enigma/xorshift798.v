@@ -20,5 +20,22 @@ module xorshift798(
     */
     //Do not modify above this line
 
+    reg [15:0] new_random;
+
+    always @(posedge clk) begin
+        if (reset) begin
+            if (seed == 0) random <= 16'h0100;
+            else random <= seed;
+        end
+        else begin
+            new_random = random;
+
+            new_random = new_random ^ (new_random << 7);
+            new_random = new_random ^ (new_random >> 9);
+            new_random = new_random ^ (new_random << 8);
+
+            random <= new_random;
+        end
+    end
 
 endmodule
