@@ -42,6 +42,8 @@ module main(
     reg [7:0] led;
     shift_reg sreg(led, seven_seg, clk, strobe, data, shift_clk);
 
+    // for testing display 
+    // sevseg_disp disp(sw[3:0], btn[0], seven_seg);
 
     
 

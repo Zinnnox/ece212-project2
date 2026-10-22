@@ -11,4 +11,15 @@ module swap(
     */
     //Do not modify above this line
 
+    always @(*) begin
+        if (en) begin
+            x = b;
+            y = a;
+        end
+        else begin
+            x = a;
+            y = b;
+        end
+    end
+
 endmodule
