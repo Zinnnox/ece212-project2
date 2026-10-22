@@ -34,4 +34,58 @@ module enigma(
     */
     //Do not modify above this line
 
+    // wires for intermediate calculations
+    wire [15:0] random;
+    wire [3:0] neg1_out, neg2_out, sbox1_out, sbox2_out, add1_out, add2_out;
+
+    negate neg1(
+        .en(random[0]),
+        .in(in),
+        .out(neg1_out)
+    );
+
+    sbox sbox1(
+        .en(random[1]),
+        .in(neg1_out),
+        .out(sbox1_out)
+    );
+
+    xorshift798 rng(
+        .clk(clk),
+        .reset(reset),
+        .seed({8'b0, seed}),
+        .random(random)
+    );
+
+    // calculate key 
+    ones_comp_add add1(
+        .a(random[3:0]),
+        .b(random[7:4]),
+        .out(add1_out)
+    );
+
+    ones_comp_add add2(
+        .a(random[11:8]),
+        .b(random[15:12]),
+        .out(add2_out)
+    );
+
+    ones_comp_add add3(
+        .a(add1_out),
+        .b(add2_out),
+        .out(key)
+    );
+
+    sbox sbox2(
+        .en(random[1]),
+        .in(sbox1_out ^ key),
+        .out(sbox2_out)
+    );
+
+    negate neg2(
+        .en(random[0]),
+        .in(sbox2_out),
+        .out(out)
+    );
+
 endmodule
